@@ -8,8 +8,8 @@ const io = new Server(server)
 const db = require("./models")
 const XRayController = require('./controllers/xray.controller')
 
-const runServer = (port) => {
-    db.sequelize.sync({ force: true })
+const runServer = (port, callback) => {
+    db.sequelize.sync({ force: false })
         .then(() => {
             console.log("Synced db.")
         })
@@ -27,10 +27,10 @@ const runServer = (port) => {
     app.get('/xray', XRayController.GetAll)
     app.post('/xray', XRayController.Add)
 
-    io.on('connection', (socket) => {})
-
     server.listen(port, () => {
         console.log(`XRay Server listening on port ${port}`)
+
+        callback()
     })
 }
 

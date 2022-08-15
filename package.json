@@ -5,11 +5,31 @@
   "main": "index.js",
   "author": "Fahdi Labib",
   "license": "MIT",
+  "build": {
+    "appId": "id.my.fahdilabib.xray-server",
+    "productName": "XRay Server",
+    "mac": {
+      "category": "public.app-category.developer-tools"
+    },
+    "dmg": {
+      "icon": false
+    },
+    "linux": {
+      "target": [
+        "AppImage"
+      ],
+      "category": "Development"
+    }
+  },
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "postinstall": "electron-builder install-app-deps",
+    "build": "electron-builder --mac --windows --linux",
+    "release": "electron-builder --mac --windows --linux --publish always"
   },
   "devDependencies": {
-    "electron": "^20.0.2"
+    "electron": "^20.0.2",
+    "electron-builder": "^23.3.3"
   },
   "dependencies": {
     "dotenv": "^16.0.1",
