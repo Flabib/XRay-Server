@@ -24,8 +24,8 @@
   "scripts": {
     "start": "run-s dev",
     "build": "run-s build:*",
-    "build:electron": "electron-builder --mac --windows --linux",
     "build:css": "postcss server/resources/styles/style.css -o server/public/dist/style.css",
+    "build:electron": "electron-builder --mac --windows --linux",
     "dev": "run-p dev:*",
     "dev:electron": "electron .",
     "dev:css": "postcss server/resources/styles/style.css -o server/public/dist/style.css --watch",
