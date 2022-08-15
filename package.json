@@ -22,14 +22,24 @@
     }
   },
   "scripts": {
-    "start": "electron .",
-    "postinstall": "electron-builder install-app-deps",
-    "build": "electron-builder --mac --windows --linux",
-    "release": "electron-builder --mac --windows --linux --publish always"
+    "start": "run-s dev",
+    "build": "run-s build:*",
+    "build:electron": "electron-builder --mac --windows --linux",
+    "build:css": "postcss server/resources/styles/style.css -o server/public/dist/style.css",
+    "dev": "run-p dev:*",
+    "dev:electron": "electron .",
+    "dev:css": "postcss server/resources/styles/style.css -o server/public/dist/style.css --watch",
+    "release": "electron-builder --mac --windows --linux --publish always",
+    "postinstall": "electron-builder install-app-deps"
   },
   "devDependencies": {
+    "autoprefixer": "^10.4.8",
     "electron": "^20.0.2",
-    "electron-builder": "^23.3.3"
+    "electron-builder": "^23.3.3",
+    "npm-run-all": "^4.1.5",
+    "postcss": "^8.4.16",
+    "postcss-cli": "^10.0.0",
+    "tailwindcss": "^3.1.8"
   },
   "dependencies": {
     "dotenv": "^16.0.1",

@@ -17,7 +17,7 @@ const runServer = (port, callback) => {
             console.log("Failed to sync db: " + err.message)
         })
 
-    app.set('views', path.join(__dirname + '/views'))
+    app.set('views', path.join(__dirname + '/resources/views'))
     app.set('view engine', 'ejs')
     app.set('socketio', io)
     app.use(express.static(path.join(__dirname + '/public')))

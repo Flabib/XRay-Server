@@ -1,6 +1,6 @@
 require('dotenv').config()
 
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow, globalShortcut } = require('electron')
 const runServer = require("./server")
 let port = process.env.PORT || 1945
 
@@ -33,10 +33,18 @@ app.on('ready', () => {
     mainWindow.once('ready-to-show', () => {
         mainWindow.show()
     })
+
+    globalShortcut.register('CommandOrControl+R', () => {
+		mainWindow.reload()
+	})
 })
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
         app.quit()
     }
+})
+
+app.on('will-quit', () => {
+    globalShortcut.unregisterAll()
 })
