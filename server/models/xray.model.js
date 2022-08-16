@@ -1,11 +1,15 @@
 const {DataTypes} = require("sequelize");
 
 const XRay = (sequelize, Sequelize) => sequelize.define('XRay', {
-    backtrace: {
-        type: DataTypes.STRING,
+    origin: {
+        type: DataTypes.JSON,
         allowNull: false
     },
-    message: {
+    content: {
+        type: DataTypes.JSON,
+        allowNull: false
+    },
+    type: {
         type: DataTypes.STRING,
         allowNull: false
     }

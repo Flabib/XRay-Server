@@ -6,6 +6,7 @@ const server = http.createServer(app)
 const { Server } = require("socket.io")
 const io = new Server(server)
 const db = require("./models")
+const XRay = db.XRay
 const XRayController = require('./controllers/xray.controller')
 
 const runServer = (port, callback) => {
@@ -26,6 +27,15 @@ const runServer = (port, callback) => {
     app.get('/', XRayController.Root)
     app.get('/xray', XRayController.GetAll)
     app.post('/xray', XRayController.Add)
+
+    io.on('connection', (socket) => {
+        socket.on('all-data', () => {
+            XRay.findAll()
+                .then(data => {
+                    socket.emit('all-data', data)
+                })
+        })
+    })
 
     server.listen(port, () => {
         console.log(`XRay Server listening on port ${port}`)

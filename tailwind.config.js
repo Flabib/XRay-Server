@@ -2,9 +2,12 @@
 module.exports = {
   content: [
     "./server/resources/views/*.ejs",
+    "./server/public/*.js",
   ],
   theme: {
     extend: {},
   },
-  plugins: [],
+  plugins: [
+    require('tailwind-scrollbar'),
+  ],
 }

@@ -39,8 +39,9 @@ module.exports = {
     Add: (req, res) => {
         const io = req.app.get('socketio')
         const xray = {
-            backtrace: req.body.backtrace,
-            message: req.body.message,
+            origin: req.body.origin,
+            content: req.body.content,
+            type: req.body.type,
         }
 
         XRay.create(xray)
@@ -55,5 +56,5 @@ module.exports = {
                         err.message || "Some error occurred while creating the XRay."
                 })
             })
-    }
+    },
 }

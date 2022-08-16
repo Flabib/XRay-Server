@@ -5,9 +5,10 @@
   <meta charset="UTF-8">
   <title>XRay Server</title>
   <link rel="stylesheet" href="/dist/style.css">
+  <link href="/vendor/jquery.json-viewer.css" type="text/css" rel="stylesheet">
 </head>
 
-<body>
+<body class="scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 hover:scrollbar-thumb-gray-200">
   <div class="bg-grey-100 min-h-screen">
     <div class="overflow-x-auto relative">
       <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
@@ -21,50 +22,31 @@
             </th>
           </tr>
         </thead>
-        <tbody id="table-content">
-          <% data.forEach(function(xray) { %>
-            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-              <th scope="row" class="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                <%= new Date(xray.createdAt).toLocaleTimeString("en-US") %>
-              </th>
-              <td class="py-4 px-6">
-                <p class="text-black">
-                  <%= xray.message %>
-                </p>
-                <p>
-                  <%= xray.backtrace.split(/(\\|\/)/).pop().toString() %>
-                </p>
-              </td>
-            </tr>
-            <% }); %>
-        </tbody>
+        <tbody id="table-content"></tbody>
       </table>
     </div>
   </div>
 
   <script src="/socket.io/socket.io.js"></script>
+  <script src="/vendor/jquery.min.js"></script>
+  <script src="/vendor/jquery.json-viewer.js"></script>
+  <script src="/app.js"></script>
   <script>
-    var socket = io();
+    (function() {
+      var socket = io();
 
-    socket.on('data', function (data) {
-      var table = document.getElementById("table-content");
-      var time = new Date(data.createdAt).toLocaleTimeString("en-US");
-      var message = data.message;
-      var backtrace = data.backtrace.split(/(\\|\/)/).pop().toString();
-      var html = `
-        <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-          <th scope="row" class="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-            ${time}
-          </th>
-          <td class="py-4 px-6">
-            <p class="text-black">${message}</p>
-            <p>${backtrace}</p>
-          </td>
-        </tr>
-      `;
+      socket.on('data', function (data) {
+        render(data, document.getElementById("table-content"));
+      });
 
-      table.insertAdjacentHTML('afterbegin', html);
-    });
+      socket.on('all-data', function (datas) {
+        datas.forEach((data) => {
+          render(data, document.getElementById("table-content"));
+        });
+      });
+
+      socket.emit('all-data');
+    })();
   </script>
 </body>
 
