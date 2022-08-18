@@ -4,6 +4,9 @@ const { app, BrowserWindow, globalShortcut } = require('electron')
 const runServer = require("./server")
 let port = process.env.PORT || 1945
 
+const db = require("./server/models")
+const XRay = db.XRay
+
 let mainWindow = null
     
 if (!app.requestSingleInstanceLock()) app.quit()
@@ -34,7 +37,20 @@ app.on('ready', () => {
         mainWindow.show()
     })
 
+    globalShortcut.register('CommandOrControl+D', () => {
+        mainWindow.webContents.openDevTools()
+	})
+
     globalShortcut.register('CommandOrControl+R', () => {
+		mainWindow.reload()
+	})
+
+    globalShortcut.register('CommandOrControl+K', () => {
+        XRay.destroy({
+            where: {},
+            truncate: true
+        });
+
 		mainWindow.reload()
 	})
 })

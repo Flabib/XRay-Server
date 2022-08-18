@@ -4,7 +4,7 @@ function render(data, target) {
     target.insertAdjacentHTML('afterbegin', element.build());
 
     if (element.hasCallback()) {
-        element.callback();
+        element.callback(element.data.id, element.data.content);
     }
 }
 
@@ -18,9 +18,21 @@ function contentBuilder(data) {
         case 'array':
             contentProvider = new ContentArray(data);
             break;
+        case 'argument':
+            contentProvider = new ContentArgument(data);
+            break;
     }
 
     return contentProvider
+}
+
+function joinTag(firstTag, secondTag) {
+    if (firstTag === '') return secondTag;
+
+    return `
+        ${firstTag}
+        ${secondTag}
+    `;
 }
 
 class ContentFactory {
@@ -74,12 +86,47 @@ class ContentString extends ContentFactory {
 class ContentArray extends ContentFactory {
     getContent() {
         return `
-            <pre id="json-${this.data.id}" class="text-black bg-gray-100 rounded-md"></pre>
-            <p class="mt-1.5">${this.getBacktrace()}</p>
+            <pre id="json-${this.data.id}" class="text-black bg-gray-100 rounded-md my-2"></pre>
+            <p class="">${this.getBacktrace()}</p>
         `;
     }
 
-    callback() {
-        $(`#json-${this.data.id}`).jsonViewer(this.data.content);
+    callback(...args) {
+        $(`#json-${args[0]}`).jsonViewer(args[1]);
+    }
+}
+
+class ContentArgument extends ContentFactory {
+    callbacks = [];
+
+    getContent() {
+        var tags = ``, arrIndex = 0;
+
+        this.data.content.forEach((argument) => {
+            var content = contentBuilder({
+                id: `${this.data.id}-${arrIndex++}`.toString(),
+                origin: this.data.origin,
+                type: argument.type,
+                content: argument.content,
+            });
+
+            console.log(content.constructor.name);
+
+            tags = joinTag(tags, content.getContent());
+
+            if (content.hasCallback()) this.callbacks.push({
+                id: content.data.id,
+                content: content.data.content,
+                call: content.callback
+            });
+        });
+
+        return tags;
+    }
+
+    callback(...args) {
+        this.callbacks.forEach(({id, content, call}) => {
+            call(id, content);
+        })
     }
 }
