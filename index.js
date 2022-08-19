@@ -2,7 +2,9 @@ require('dotenv').config()
 
 const { app, BrowserWindow, globalShortcut } = require('electron')
 const runServer = require("./server")
-let port = process.env.PORT || 1945
+const server_port = process.env.SERVER_PORT || 1945
+const client_port = process.env.CLIENT_PORT || 1945
+const isDevelopment = process.env.NODE_ENV === 'development'
 
 const db = require("./server/models")
 const XRay = db.XRay
@@ -19,7 +21,7 @@ app.on('second-instance', (event, commandLine, workingDirectory) => {
 })
     
 app.on('ready', () => {
-    runServer(port, () => {})
+    runServer(server_port, () => {})
 
     mainWindow = new BrowserWindow({
         show: false,
@@ -30,16 +32,24 @@ app.on('ready', () => {
         resizable: false,
     })
 
-    mainWindow.loadURL(`http://localhost:${port}`)
+    if (isDevelopment) {
+        mainWindow.loadURL(`http://localhost:${client_port}`)
+
+    } else {
+        mainWindow.loadURL(`http://localhost:${server_port}`)
+    }
+
     mainWindow.focus()
 
     mainWindow.once('ready-to-show', () => {
         mainWindow.show()
     })
 
-    globalShortcut.register('CommandOrControl+D', () => {
-        mainWindow.webContents.openDevTools()
-	})
+    if (isDevelopment) {
+        globalShortcut.register('CommandOrControl+D', () => {
+            mainWindow.webContents.openDevTools()
+        })
+    }
 
     globalShortcut.register('CommandOrControl+R', () => {
 		mainWindow.reload()

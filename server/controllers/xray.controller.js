@@ -2,24 +2,6 @@ const db = require("../models")
 const XRay = db.XRay
 
 module.exports = {
-    Root: (req, res) => {
-        XRay.findAll({
-            order: [
-                ['createdAt', 'DESC']
-            ]
-        })
-        .then(data => {
-            res.render('index', {
-                data: data,
-            })
-        })
-        .catch(err => {
-            res.status(500).send({
-                message:
-                    err.message || "Some error occurred while retrieving XRay."
-            })
-        })
-    },
     GetAll: (req, res) => {
         XRay.findAll({
             order: [
