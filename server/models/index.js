@@ -1,9 +1,10 @@
-const { Sequelize, Op, Model, DataTypes } = require("sequelize")
-const sequelize = new Sequelize('sqlite::memory:')
+const { Sequelize } = require('sequelize');
+const model = require('./xray.model');
 
-const db = {}
-db.Sequelize = Sequelize
-db.sequelize = sequelize
-db.XRay = require('./xray.model')(sequelize, Sequelize)
+const sequelize = new Sequelize('sqlite::memory:');
 
-module.exports = db
+module.exports = {
+    Sequelize: Sequelize,
+    sequelize: sequelize,
+    XRay: model(sequelize, Sequelize),
+};

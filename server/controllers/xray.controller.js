@@ -1,5 +1,5 @@
-const db = require("../models")
-const XRay = db.XRay
+const db = require('../models');
+const XRay = db.XRay;
 
 module.exports = {
     GetAll: (req, res) => {
@@ -16,15 +16,15 @@ module.exports = {
                 message:
                     err.message || "Some error occurred while retrieving XRay."
             })
-        })
+        });
     },
     Add: (req, res) => {
-        const io = req.app.get('socketio')
+        const io = req.app.get('socketio');
         const xray = {
             origin: req.body.origin,
             content: req.body.content,
             type: req.body.type,
-        }
+        };
 
         XRay.create(xray)
             .then(data => {
@@ -37,6 +37,6 @@ module.exports = {
                     message:
                         err.message || "Some error occurred while creating the XRay."
                 })
-            })
+            });
     },
 }

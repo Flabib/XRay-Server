@@ -1,27 +1,26 @@
 require('dotenv').config()
+const { app, BrowserWindow, globalShortcut, Menu, MenuItem } = require('electron');
+const runServer  = require('./server');
+const db  = require('./server/models');
 
-const { app, BrowserWindow, globalShortcut } = require('electron')
-const runServer = require("./server")
-const server_port = process.env.SERVER_PORT || 1945
-const client_port = process.env.CLIENT_PORT || 1945
-const isDevelopment = process.env.NODE_ENV === 'development'
+const server_port = process.env.SERVER_PORT || 1945;
+const client_port = process.env.CLIENT_PORT || 1928;
+const isDevelopment = process.env.NODE_ENV === 'development';
+const XRay = db.XRay;
 
-const db = require("./server/models")
-const XRay = db.XRay
-
-let mainWindow = null
+let mainWindow = null;
     
-if (!app.requestSingleInstanceLock()) app.quit()
+if (!app.requestSingleInstanceLock()) app.quit();
 
 app.on('second-instance', (event, commandLine, workingDirectory) => {
-    if (mainWindow) {
-      if (mainWindow.isMinimized()) mainWindow.restore()
-      mainWindow.focus()
-    }
+    if (!mainWindow) return;
+    if (mainWindow.isMinimized()) mainWindow.restore();
+
+    mainWindow.focus();
 })
     
 app.on('ready', () => {
-    runServer(server_port, () => {})
+    runServer(server_port, () => {});
 
     mainWindow = new BrowserWindow({
         show: false,
@@ -30,47 +29,58 @@ app.on('ready', () => {
         autoHideMenuBar: true,
         useContentSize: true,
         resizable: false,
-    })
+    });
 
     if (isDevelopment) {
-        mainWindow.loadURL(`http://localhost:${client_port}`)
-
+        mainWindow.loadURL(`http://localhost:${client_port}`);
     } else {
-        mainWindow.loadURL(`http://localhost:${server_port}`)
+        mainWindow.loadURL(`http://localhost:${server_port}`);
     }
 
-    mainWindow.focus()
+    mainWindow.focus();
 
     mainWindow.once('ready-to-show', () => {
-        mainWindow.show()
+        mainWindow.show();
     })
 
-    if (isDevelopment) {
-        globalShortcut.register('CommandOrControl+D', () => {
-            mainWindow.webContents.openDevTools()
-        })
-    }
+    const menu = new Menu()
+    menu.append(new MenuItem({
+        label: 'View',
+        submenu: [
+            {
+                role: 'reload',
+                accelerator: 'CommandOrControl+R',
+            },
+            {
+                label: 'Clear',
+                accelerator: 'CommandOrControl+K',
+                click: () => {
+                    XRay.destroy({
+                        where: {},
+                        truncate: true
+                    });
 
-    globalShortcut.register('CommandOrControl+R', () => {
-		mainWindow.reload()
-	})
+                    mainWindow.reload();
+                }
+            },
+            ...(isDevelopment ? [
+                {
+                    role: 'toggleDevTools',
+                    accelerator: 'CommandOrControl+D',
+                },
+            ] : []),
+        ]
+    }))
 
-    globalShortcut.register('CommandOrControl+K', () => {
-        XRay.destroy({
-            where: {},
-            truncate: true
-        });
-
-		mainWindow.reload()
-	})
+    Menu.setApplicationMenu(menu)
 })
 
 app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') {
-        app.quit()
-    }
+    if (process.platform === 'darwin') return;
+
+    app.quit();
 })
 
 app.on('will-quit', () => {
-    globalShortcut.unregisterAll()
+    globalShortcut.unregisterAll();
 })

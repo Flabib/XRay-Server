@@ -18,6 +18,6 @@ const XRay = (sequelize, Sequelize) => sequelize.define('XRay', {
         type: DataTypes.STRING,
         allowNull: false
     }
-}, {sequelize, Sequelize})
+}, {sequelize, Sequelize});
 
-module.exports = XRay
+module.exports = XRay;
