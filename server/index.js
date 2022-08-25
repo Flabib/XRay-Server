@@ -27,8 +27,8 @@ const runServer = (port, callback) => {
     app.set('views', path.join(__dirname + '/resources/views'));
     app.set('view engine', 'ejs');
     app.set('socketio', io);
-    app.use(express.static(path.join(__dirname + '/public')));
-    app.use(express.static(path.join(__dirname + '../client/dist')));
+    app.use(express.static(path.join(__dirname, 'public')));
+    app.use(express.static(path.join(__dirname, '..', 'client/dist')));
     app.use(express.json());
 
     app.get('/xray', XRayController.GetAll);
