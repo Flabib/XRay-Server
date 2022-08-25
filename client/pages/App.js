@@ -1,26 +1,25 @@
-import React from 'react';
-import { io } from 'socket.io-client';
-import { render } from "../helpers";
+import React, { useState, useEffect } from 'react';
+import io from 'socket.io-client';
 import Table from "./components/Table";
 
 const App = () => {
-    React.useEffect(() => {
+    const [ rows, setRows ] = useState([]);
+
+    useEffect(() => {
         const socket = io('http://localhost:1945');
 
-        socket.on('data', function (data) {
-            render(data, document.getElementById("table-content"));
+        socket.on('data', (data) => {
+            setRows((rows) => [data, ...rows]);
         });
 
-        socket.on('all-data', function (datas) {
-            datas.forEach((data) => {
-                render(data, document.getElementById("table-content"));
-            });
+        socket.on('all-data', (allData) => {
+            setRows(allData);
         });
 
         socket.emit('all-data');
     },[]);
 
-    return <Table />;
+    return <Table rows={rows} />;
 }
 
 export default App;

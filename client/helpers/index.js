@@ -2,16 +2,6 @@ import ContentString from '../factories/ContentString';
 import ContentArray from '../factories/ContentArray';
 import ContentArgument from '../factories/ContentArgument';
 
-const render = (data, target) => {
-    const element = contentBuilder(data);
-
-    target.insertAdjacentHTML('afterbegin', element.build());
-
-    if (element.hasCallback()) {
-        element.callback(element.data.id, element.data.content);
-    }
-};
-
 const contentBuilder = (data) => {
     let contentProvider;
 
@@ -30,13 +20,4 @@ const contentBuilder = (data) => {
     return contentProvider;
 };
 
-const joinTag = (firstTag, secondTag) => {
-    if (firstTag === '') return secondTag;
-
-    return `
-        ${firstTag}
-        ${secondTag}
-    `;
-};
-
-export { render, contentBuilder, joinTag };
+export { contentBuilder };

@@ -1,6 +1,7 @@
 import React from "react";
+import { contentBuilder } from "../../helpers";
 
-const Table = () => {
+const Table = ({ rows }) => {
     return (
         <div className="scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 hover:scrollbar-thumb-gray-200">
             <div className="bg-grey-100 min-h-screen">
@@ -16,7 +17,11 @@ const Table = () => {
                             </th>
                         </tr>
                         </thead>
-                        <tbody id="table-content"/>
+                        <tbody id="table-content">
+                            {rows.map((row) => {
+                                return contentBuilder(row).build();
+                            })}
+                        </tbody>
                     </table>
                 </div>
             </div>

@@ -1,3 +1,4 @@
+import React from "react";
 import ContentFactory from "./ContentFactory";
 import { contentBuilder, joinTag } from "../helpers";
 
@@ -5,34 +6,20 @@ class ContentArgument extends ContentFactory {
     callbacks = [];
 
     getContent() {
-        let tags = ``, arrIndex = 0;
+        return (
+            <>
+                {this.data.content.map((value, key) => {
+                    const content = contentBuilder({
+                        id: `${this.data.id}-${key}`.toString(),
+                        origin: this.data.origin,
+                        type: value.type,
+                        content: value.content,
+                    });
 
-        this.data.content.forEach((argument) => {
-            const content = contentBuilder({
-                id: `${this.data.id}-${arrIndex++}`.toString(),
-                origin: this.data.origin,
-                type: argument.type,
-                content: argument.content,
-            });
-
-            console.log(content.constructor.name);
-
-            tags = joinTag(tags, content.getContent());
-
-            if (content.hasCallback()) this.callbacks.push({
-                id: content.data.id,
-                content: content.data.content,
-                call: content.callback
-            });
-        });
-
-        return tags;
-    }
-
-    callback(...args) {
-        this.callbacks.forEach(({id, content, call}) => {
-            call(id, content);
-        })
+                    return content.getContent();
+                })}
+            </>
+        );
     }
 }
 

@@ -1,3 +1,5 @@
+import React from "react";
+
 class ContentFactory {
     constructor(data) {
         if (this.constructor === ContentFactory) {
@@ -5,10 +7,6 @@ class ContentFactory {
         }
 
         this.data = data;
-    }
-
-    hasCallback() {
-        return typeof this.callback === 'function';
     }
 
     getTime() {
@@ -24,16 +22,16 @@ class ContentFactory {
     }
 
     build() {
-        return `
-            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-              <th scope="row" class="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white align-top">
-                ${this.getTime()}
+        return (
+            <tr key={this.data.id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+              <th scope="row" className="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white align-top">
+                {this.getTime()}
               </th>
-              <td class="py-4 px-6">
-                ${this.getContent()}
+              <td className="py-4 px-6">
+                {this.getContent()}
               </td>
             </tr>
-        `;
+        );
     }
 }
 
