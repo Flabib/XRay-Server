@@ -29,6 +29,7 @@ const runServer = (port, callback) => {
     app.set('socketio', io);
     app.use(express.static(path.join(__dirname, 'public')));
     app.use(express.static(path.join(__dirname, '..', 'client/dist')));
+
     app.use(express.json());
 
     app.get('/xray', XRayController.GetAll);
