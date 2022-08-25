@@ -1,6 +1,6 @@
 {
   "name": "xray-server",
-  "version": "1.3.3",
+  "version": "1.4",
   "description": "This package inspired by spatie/ray",
   "main": "index.js",
   "author": "Fahdi Labib",

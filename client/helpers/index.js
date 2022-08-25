@@ -5,7 +5,7 @@ import ContentArgument from '../factories/ContentArgument';
 const contentBuilder = (data) => {
     let contentProvider;
 
-    switch (data.type) {
+    switch (data.meta.type) {
         case 'string':
             contentProvider = new ContentString(data);
             break;

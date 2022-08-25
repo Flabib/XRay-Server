@@ -23,7 +23,7 @@ module.exports = {
         const xray = {
             origin: req.body.origin,
             content: req.body.content,
-            type: req.body.type,
+            meta: req.body.meta,
         };
 
         XRay.create(xray)

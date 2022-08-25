@@ -14,8 +14,8 @@ const XRay = (sequelize, Sequelize) => sequelize.define('XRay', {
         type: DataTypes.JSON,
         allowNull: false
     },
-    type: {
-        type: DataTypes.STRING,
+    meta: {
+        type: DataTypes.JSON,
         allowNull: false
     }
 }, {sequelize, Sequelize});

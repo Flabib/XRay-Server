@@ -6,6 +6,7 @@ const db  = require('./server/models');
 const server_port = process.env.SERVER_PORT || 1945;
 const client_port = process.env.CLIENT_PORT || 1928;
 const isDevelopment = process.env.NODE_ENV === 'development';
+const isMac = process.platform === 'darwin';
 const XRay = db.XRay;
 
 let mainWindow = null;
@@ -28,7 +29,6 @@ app.on('ready', () => {
         height: 600,
         autoHideMenuBar: true,
         useContentSize: true,
-        resizable: false,
     });
 
     if (isDevelopment) {
@@ -43,35 +43,44 @@ app.on('ready', () => {
         mainWindow.show();
     })
 
-    const menu = new Menu()
-    menu.append(new MenuItem({
-        label: 'View',
-        submenu: [
-            {
-                role: 'reload',
-                accelerator: 'CommandOrControl+R',
-            },
-            {
-                label: 'Clear',
-                accelerator: 'CommandOrControl+K',
-                click: () => {
-                    XRay.destroy({
-                        where: {},
-                        truncate: true
-                    });
-
-                    mainWindow.reload();
-                }
-            },
-            ...(isDevelopment ? [
+    const template = [
+        ...(isMac ? [{
+            label: app.name,
+            submenu: [
+                { role: 'about' },
+                { role: 'quit' }
+            ]
+        }] : []),
+        {
+            label: 'View',
+            submenu: [
                 {
-                    role: 'toggleDevTools',
-                    accelerator: 'CommandOrControl+D',
+                    role: 'reload',
+                    accelerator: 'CommandOrControl+R',
                 },
-            ] : []),
-        ]
-    }))
+                {
+                    label: 'Clear',
+                    accelerator: 'CommandOrControl+K',
+                    click: () => {
+                        XRay.destroy({
+                            where: {},
+                            truncate: true
+                        });
 
+                        mainWindow.reload();
+                    }
+                },
+                ...(isDevelopment ? [
+                    {
+                        role: 'toggleDevTools',
+                        accelerator: 'CommandOrControl+D',
+                    },
+                ] : []),
+            ]
+        }
+    ];
+
+    const menu = Menu.buildFromTemplate(template)
     Menu.setApplicationMenu(menu)
 })
 
