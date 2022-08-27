@@ -3,8 +3,6 @@ import ContentFactory from "./ContentFactory";
 import { contentBuilder, joinTag } from "../helpers";
 
 class ContentArgument extends ContentFactory {
-    callbacks = [];
-
     getContent() {
         return (
             <>
@@ -12,7 +10,7 @@ class ContentArgument extends ContentFactory {
                     const content = contentBuilder({
                         id: `${this.data.id}-${key}`.toString(),
                         origin: this.data.origin,
-                        type: value.type,
+                        meta: value.meta,
                         content: value.content,
                     });
 

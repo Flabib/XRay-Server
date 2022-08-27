@@ -29,7 +29,7 @@ const App = () => {
         const socket = io('http://localhost:1945');
 
         socket.on('data', (data) => {
-            setRows((rows) => [data, ...rows]);
+            setRows((rows) => [...rows, data]);
         });
 
         socket.on('all-data', (allData) => {
@@ -41,16 +41,22 @@ const App = () => {
 
     return (
         <>
-            <InlineDot filter={filter} handleChangeFilter={handleChangeFilter} />
-            <Table rows={rows.filter((row) => {
-                const objIndex = filter.findIndex((obj => obj.color === row.meta.color))
-                const isAnyActive = filter.filter((value) => value.isActive).length > 0;
+            <div className="relative">
+                <div className="fixed top-0 left-0 right-0 z-10">
+                    <InlineDot filter={filter} handleChangeFilter={handleChangeFilter} />
+                </div>
+                <div className="mt-12">
+                    <Table rows={rows.filter((row) => {
+                        const objIndex = filter.findIndex((obj => obj.color === row.meta.color))
+                        const isAnyActive = filter.filter((value) => value.isActive).length > 0;
 
-                if (objIndex === -1) return true;
-                if (!isAnyActive) return true;
+                        if (objIndex === -1) return true;
+                        if (!isAnyActive) return true;
 
-                return filter[objIndex].isActive;
-            })} />
+                        return filter[objIndex].isActive;
+                    }).reverse()} />
+                </div>
+            </div>
         </>
     );
 };

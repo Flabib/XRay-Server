@@ -2,9 +2,9 @@ const {DataTypes} = require("sequelize");
 
 const XRay = (sequelize, Sequelize) => sequelize.define('XRay', {
     id: {
-        type: Sequelize.UUID,
-        defaultValue: Sequelize.UUIDV4,
-        primaryKey: true,
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true
     },
     origin: {
         type: DataTypes.JSON,
